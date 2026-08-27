@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Card">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0E1319">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACk0lEQVR4nO3dIZITQRSAYZZCY1AYBEfAo7kLB+IuaDxHQHASRMwK/hRJenp5U9/n8zbV+TOZmuqufXr77v0r+JvXL/0G+H+JgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhIbzb/vd/fPt76kg9ff5l86+Qlnrb9p6Y7FuK5K4ti8kH8rJA2xfHgF+XKBJOP48pBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkDbF8fi2tppg8nFcOUj7NhhfTNzJPXHyErvjYBA/KyRxkMRBEgdJHCRxkM5zyv7T5y+3Tv754/tZJy9xhlP2dyzxc1eWe+LkhXZfOY5zx3r94yc0cfIS40/ZXxbrvm/S5VW13BMnr+WGlCQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCJgyQOkjhI4iCNP2X/yOaX65tuJk5e6zzbBI/bHDVx8hLnOWU/cY+43edM5YaUJA6SOEjiIImDJA7S7odgE58ZTJy8xL7nHBNPrE+cvNDuK8fEE+sTJy+x6Z5j4on1iZPXckNKEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkMRBEgdJHCRxkDbFMfHE+sTJaw3YYGzyS9l9kHriTu6Jk5dwyp7khpQkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SH8AwYn7q8cqdEkAAAAASUVORK5CYII=">
+<title>Daily Card</title>
+<style>
+  :root{
+    --ground:#0E1319;
+    --panel:#161D26;
+    --raise:#1D2632;
+    --rule:#2B3846;
+    --bone:#E9E6DF;
+    --dim:#6E7D8D;
+    --dimmer:#4B5866;
+    --amber:#F0A93B;
+    --amber-soft:rgba(240,169,59,.14);
+    --teal:#74A9A4;
+    --teal-soft:rgba(116,169,164,.14);
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{background:#0E1319;color-scheme:dark;}
+  html,body{margin:0;padding:0;min-height:100%;}
+  body{
+    background:var(--ground);
+    color:var(--bone);
+    font-family:var(--mono);
+    font-size:15px;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .cd-wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px;}
+
+  .cd-eyebrow{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dimmer);
+  }
+  .cd-dayrow{display:flex;align-items:center;gap:14px;margin:10px 0 4px;}
+  .cd-daynum{font-size:46px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--bone);}
+  .cd-dayof{font-size:13px;color:var(--dim);letter-spacing:.06em;}
+  .cd-nudge{margin-left:auto;display:flex;gap:6px;}
+  .cd-nudge button{
+    width:34px;height:34px;border-radius:8px;
+    background:transparent;border:1px solid var(--rule);color:var(--dim);
+    font-family:var(--mono);font-size:15px;cursor:pointer;
+  }
+  .cd-nudge button:active{background:var(--raise);}
+  .cd-week{
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);
+    padding-bottom:16px;border-bottom:1px solid var(--rule);
+  }
+
+  .cd-block{padding:20px 0;border-bottom:1px solid var(--rule);}
+  .cd-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .cd-name{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone);}
+  .cd-count{margin-left:auto;font-size:13px;font-variant-numeric:tabular-nums;color:var(--dim);letter-spacing:.04em;}
+  .cd-count b{color:var(--amber);font-weight:600;}
+  .cd-undo{
+    width:30px;height:30px;flex:none;border-radius:7px;
+    background:transparent;border:1px solid var(--rule);color:var(--dim);
+    font-family:var(--mono);font-size:14px;line-height:1;cursor:pointer;
+  }
+  .cd-undo:disabled{opacity:.3;}
+  .cd-undo:active:not(:disabled){background:var(--raise);color:var(--bone);}
+
+  .cd-boxes{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:14px;}
+  .cd-group{display:flex;gap:6px;}
+  .cd-box{width:18px;height:18px;border-radius:3px;border:1px solid var(--rule);background:transparent;position:relative;}
+  .cd-box::after{
+    content:"";position:absolute;inset:2px;border-radius:1px;background:var(--amber);
+    transform:scale(0);opacity:0;transition:transform .16s cubic-bezier(.2,.9,.3,1.2), opacity .16s;
+  }
+  .cd-box.is-on{border-color:rgba(240,169,59,.45);}
+  .cd-box.is-on::after{transform:scale(1);opacity:1;}
+  .cd-box.is-over{border-color:rgba(240,169,59,.45);}
+  .cd-box.is-over::after{transform:scale(1);opacity:.35;}
+
+  .cd-btns{display:flex;gap:8px;}
+  .cd-tap{
+    flex:1;min-height:56px;border-radius:11px;cursor:pointer;
+    background:var(--panel);border:1px solid var(--rule);color:var(--bone);
+    font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    display:flex;align-items:center;justify-content:center;
+    touch-action:manipulation;transition:background .08s, transform .08s;
+  }
+  .cd-tap:active{background:var(--amber-soft);border-color:rgba(240,169,59,.5);transform:scale(.98);}
+  .cd-tap.cd-quiet:active{background:var(--raise);border-color:var(--rule);}
+
+  .cd-note{font-size:11px;color:var(--dimmer);margin-top:10px;letter-spacing:.02em;line-height:1.5;}
+  .cd-note.is-flag{color:var(--amber);}
+
+  .cd-dev{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .cd-cell{background:var(--panel);border:1px solid var(--rule);border-radius:11px;padding:12px 8px 10px;text-align:center;}
+  .cd-cellnum{font-size:26px;font-variant-numeric:tabular-nums;line-height:1;color:var(--teal);}
+  .cd-cellname{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:6px;}
+  .cd-cellbtns{display:flex;gap:6px;margin-top:10px;}
+  .cd-cellbtns button{
+    flex:1;height:34px;border-radius:7px;cursor:pointer;
+    background:transparent;border:1px solid var(--rule);color:var(--dim);
+    font-family:var(--mono);font-size:14px;line-height:1;touch-action:manipulation;
+  }
+  .cd-cellbtns button:active{background:var(--teal-soft);color:var(--bone);}
+  .cd-cellbtns button:disabled{opacity:.3;}
+
+  .cd-sliprow{display:flex;align-items:center;gap:12px;}
+  .cd-slipnum{font-size:34px;font-variant-numeric:tabular-nums;line-height:1;color:var(--bone);min-width:44px;}
+
+  .cd-pause{
+    margin-top:20px;padding:16px;border:1px dashed var(--rule);border-radius:11px;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .cd-pause .cd-no{
+    font-size:13px;letter-spacing:.16em;color:var(--amber);border:1px solid rgba(240,169,59,.4);
+    border-radius:6px;padding:4px 9px;flex:none;
+  }
+  .cd-pause p{margin:0;font-size:11px;color:var(--dim);line-height:1.6;}
+
+  .cd-hist{margin-top:26px;}
+  .cd-histhead{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dimmer);margin-bottom:12px;}
+  .cd-hrow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:11px;color:var(--dim);}
+  .cd-hday{width:52px;flex:none;letter-spacing:.06em;}
+  .cd-hbar{flex:1;height:6px;border-radius:3px;background:var(--raise);overflow:hidden;}
+  .cd-hfill{height:100%;background:var(--amber);opacity:.65;border-radius:3px;}
+  .cd-hnum{width:58px;flex:none;text-align:right;font-variant-numeric:tabular-nums;}
+
+  .cd-footer{margin-top:28px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .cd-minor{
+    background:transparent;border:1px solid var(--rule);color:var(--dimmer);
+    border-radius:8px;padding:9px 14px;font-family:var(--mono);
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  }
+  .cd-minor.is-armed{color:var(--amber);border-color:rgba(240,169,59,.5);}
+  .cd-stamp{font-size:10px;color:var(--dimmer);letter-spacing:.1em;}
+
+  .cd-banner{
+    background:var(--raise);border:1px solid var(--rule);border-radius:9px;
+    padding:11px 13px;font-size:11px;color:var(--dim);margin-bottom:16px;line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .cd-box::after,.cd-tap{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="cd-wrap" id="app"></div>
+
+<script>
+(function(){
+  const KEY = 'coordination.v1';
+  const TARGETS = { a:20, i:10, f:5 };
+  const BLANK = () => ({ a:0, ag:0, ab:0, i:0, f:0, dn:0, dc:0, dd:0, cs:0 });
+
+  let state = { startDate:null, days:{} };
+  let storageOK = true;
+  let armed = false;
+  let copied = false;
+
+  function iso(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function fromIso(s){ const p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2], 12, 0, 0); }
+  function shiftIso(s, n){ const d = fromIso(s); d.setDate(d.getDate()+n); return iso(d); }
+  function daysBetween(a,b){ return Math.round((fromIso(b) - fromIso(a)) / 86400000); }
+  const TODAY = iso(new Date());
+
+  function dayNumber(){ return daysBetween(state.startDate, TODAY) + 1; }
+  function prettyDate(s){ return fromIso(s).toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}); }
+  function shortDay(s){
+    const d = fromIso(s);
+    return d.toLocaleDateString(undefined,{weekday:'short'}).slice(0,3) + ' ' + d.getDate();
+  }
+  function today(){
+    if(!state.days[TODAY]) state.days[TODAY] = BLANK();
+    return state.days[TODAY];
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(raw){
+        const p = JSON.parse(raw);
+        state.startDate = p.startDate || TODAY;
+        state.days = p.days || {};
+      } else {
+        state.startDate = TODAY;
+        localStorage.setItem(KEY, JSON.stringify(state));
+      }
+    }catch(e){
+      storageOK = false;
+      state.startDate = TODAY;
+    }
+  }
+  function save(){
+    if(!storageOK) return;
+    const cutoff = shiftIso(TODAY, -60);
+    Object.keys(state.days).forEach(k=>{ if(k < cutoff) delete state.days[k]; });
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch(e){ storageOK = false; }
+  }
+
+  function buzz(){ if(navigator.vibrate) navigator.vibrate(8); }
+  function bump(field, n){
+    const d = today();
+    d[field] = Math.max(0, (d[field]||0) + n);
+    if(n>0) buzz();
+    save(); render();
+  }
+  function amalgam(kind, n){
+    const d = today();
+    if(n<0 && (d.a<=0 || (d[kind]||0)<=0)) return;
+    d.a = Math.max(0, d.a + n);
+    d[kind] = Math.max(0, (d[kind]||0) + n);
+    if(n>0) buzz();
+    save(); render();
+  }
+  function nudgeDay(n){ state.startDate = shiftIso(state.startDate, -n); save(); render(); }
+  function clearToday(){
+    if(!armed){ armed = true; render(); setTimeout(()=>{armed=false;render();},3500); return; }
+    state.days[TODAY] = BLANK(); armed = false; save(); render();
+  }
+  function copyData(){
+    const rows = ['date,day,amalgam,good,bad,inventory,frame,dev_total,dev_caught,dev_declared,slips'];
+    Object.keys(state.days).sort().forEach(k=>{
+      const d = state.days[k];
+      rows.push([k, daysBetween(state.startDate,k)+1, d.a,d.ag,d.ab,d.i,d.f,d.dn,d.dc,d.dd,d.cs].join(','));
+    });
+    const text = rows.join('\n');
+    const done = ()=>{ copied = true; render(); setTimeout(()=>{copied=false;render();},2500); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(()=>window.prompt('Copy your data:', text));
+    } else {
+      window.prompt('Copy your data:', text);
+    }
+  }
+
+  function boxes(count, target, groupSize){
+    let html = '<div class="cd-boxes">';
+    const groups = Math.ceil(target/groupSize);
+    for(let g=0; g<groups; g++){
+      html += '<div class="cd-group">';
+      for(let i=0;i<groupSize;i++){
+        const idx = g*groupSize+i;
+        if(idx>=target) break;
+        html += '<div class="cd-box'+(idx<count?' is-on':'')+'"></div>';
+      }
+      html += '</div>';
+    }
+    if(count>target){
+      html += '<div class="cd-group">';
+      for(let i=0;i<Math.min(count-target,10);i++) html += '<div class="cd-box is-over"></div>';
+      html += '</div>';
+    }
+    return html+'</div>';
+  }
+
+  function devCell(name, val, field){
+    return '<div class="cd-cell">'+
+      '<div class="cd-cellnum">'+val+'</div>'+
+      '<div class="cd-cellname">'+name+'</div>'+
+      '<div class="cd-cellbtns">'+
+        '<button data-act="'+field+'-" '+(val?'':'disabled')+' aria-label="Decrease '+name+'">&minus;</button>'+
+        '<button data-act="'+field+'+" aria-label="Increase '+name+'">+</button>'+
+      '</div></div>';
+  }
+
+  function history(){
+    let rows='';
+    for(let i=1;i<=7;i++){
+      const key = shiftIso(TODAY,-i);
+      const d = state.days[key];
+      const a = d?d.a:0;
+      rows += '<div class="cd-hrow">'+
+        '<span class="cd-hday">'+shortDay(key)+'</span>'+
+        '<span class="cd-hbar"><span class="cd-hfill" style="width:'+Math.min(100,(a/TARGETS.a)*100)+'%"></span></span>'+
+        '<span class="cd-hnum">'+a+' / '+TARGETS.a+'</span></div>';
+    }
+    return '<div class="cd-hist"><div class="cd-histhead">Amalgam reps, last 7 days</div>'+rows+'</div>';
+  }
+
+  function render(){
+    const d = today();
+    const goodLow = d.a>0 && d.ag<8;
+    document.getElementById('app').innerHTML =
+      (storageOK?'':'<div class="cd-banner">This browser is blocking local storage, so counts won\'t survive a reload. Turn off Private Browsing and reload.</div>')+
+      '<div class="cd-eyebrow"><span>Coordination training</span><span>'+prettyDate(TODAY)+'</span></div>'+
+      '<div class="cd-dayrow"><span class="cd-daynum">'+dayNumber()+'</span><span class="cd-dayof">of 30</span>'+
+        '<span class="cd-nudge"><button data-act="day-" aria-label="Day down">&minus;</button>'+
+        '<button data-act="day+" aria-label="Day up">+</button></span></div>'+
+      '<div class="cd-week">Week 4 &middot; Integration + the Pause</div>'+
+
+      '<div class="cd-block"><div class="cd-head"><span class="cd-name">Amalgam</span>'+
+        '<span class="cd-count"><b>'+d.a+'</b> / '+TARGETS.a+'</span>'+
+        '<button class="cd-undo" data-act="a-" '+(d.a?'':'disabled')+' aria-label="Undo rep">&minus;</button></div>'+
+        boxes(d.a,TARGETS.a,5)+
+        '<div class="cd-btns"><button class="cd-tap" data-act="ag+">Good event</button>'+
+        '<button class="cd-tap" data-act="ab+">Bad event</button></div>'+
+        '<div class="cd-note'+(goodLow?' is-flag':'')+'">good '+d.ag+' &nbsp;·&nbsp; bad '+d.ab+
+          (goodLow?' — under 8 good. You\'re still only talking to the mirror when you\'re unhappy.':'')+'</div></div>'+
+
+      '<div class="cd-block"><div class="cd-head"><span class="cd-name">Thought inventory</span>'+
+        '<span class="cd-count"><b>'+d.i+'</b> / '+TARGETS.i+'</span>'+
+        '<button class="cd-undo" data-act="i-" '+(d.i?'':'disabled')+' aria-label="Undo catch">&minus;</button></div>'+
+        boxes(d.i,TARGETS.i,5)+
+        '<div class="cd-btns"><button class="cd-tap" data-act="i+">Caught and restated</button></div></div>'+
+
+      '<div class="cd-block"><div class="cd-head"><span class="cd-name">Frame flashes</span>'+
+        '<span class="cd-count"><b>'+d.f+'</b> / '+TARGETS.f+'</span>'+
+        '<button class="cd-undo" data-act="f-" '+(d.f?'':'disabled')+' aria-label="Undo flash">&minus;</button></div>'+
+        boxes(d.f,TARGETS.f,5)+
+        '<div class="cd-btns"><button class="cd-tap" data-act="f+">Flashed the frame</button></div></div>'+
+
+      '<div class="cd-block"><div class="cd-head"><span class="cd-name">Deviations</span>'+
+        '<span class="cd-count">catch rate '+(d.dn?Math.round((d.dc/d.dn)*100):0)+'%</span></div>'+
+        '<div class="cd-dev">'+devCell('Total',d.dn,'dn')+devCell('Caught',d.dc,'dc')+devCell('Declared',d.dd,'dd')+'</div>'+
+        '<div class="cd-note">Total is every departure from the script, whether or not you caught it in time.</div></div>'+
+
+      '<div class="cd-block"><div class="cd-head"><span class="cd-name">Criticism slips</span></div>'+
+        '<div class="cd-sliprow"><span class="cd-slipnum">'+d.cs+'</span>'+
+        '<button class="cd-tap cd-quiet" data-act="cs+">Log a slip</button>'+
+        '<button class="cd-undo" data-act="cs-" '+(d.cs?'':'disabled')+' aria-label="Undo slip">&minus;</button></div>'+
+        '<div class="cd-note">Count them, don\'t punish them.</div></div>'+
+
+      '<div class="cd-pause"><span class="cd-no">NO</span>'+
+        '<p>Outcome assessment performed. You audit reps, not results — nothing gets evaluated until Day 30.</p></div>'+
+
+      history()+
+
+      '<div class="cd-footer"><span class="cd-stamp">Started '+prettyDate(state.startDate)+'</span>'+
+        '<span style="display:flex;gap:8px">'+
+        '<button class="cd-minor" data-act="copy">'+(copied?'Copied':'Copy data')+'</button>'+
+        '<button class="cd-minor'+(armed?' is-armed':'')+'" data-act="clear">'+(armed?'Tap again':'Clear today')+'</button>'+
+        '</span></div>';
+  }
+
+  document.getElementById('app').addEventListener('click', function(e){
+    const btn = e.target.closest('[data-act]');
+    if(!btn || btn.disabled) return;
+    const act = btn.getAttribute('data-act');
+    if(act==='clear') return clearToday();
+    if(act==='copy')  return copyData();
+    if(act==='day+')  return nudgeDay(1);
+    if(act==='day-')  return nudgeDay(-1);
+    if(act==='ag+')   return amalgam('ag',1);
+    if(act==='ab+')   return amalgam('ab',1);
+    if(act==='a-'){ const d=today(); return amalgam(d.ab>=d.ag?'ab':'ag',-1); }
+    bump(act.slice(0,-1), act.slice(-1)==='+'?1:-1);
+  });
+
+  load(); render();
+})();
+</script>
+</body>
+</html>
